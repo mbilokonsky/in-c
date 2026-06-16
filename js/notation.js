@@ -78,12 +78,25 @@
     const voice = new VF.Voice({ num_beats: 4, beat_value: 4 }).setMode(VF.Voice.Mode.SOFT);
     voice.addTickables(notes);
 
+    // Generate beams BEFORE drawing so beamed notes suppress their own flags
+    // (otherwise each eighth draws a flag AND the beam is layered on top).
+    const beams = VF.Beam.generateBeams(notes);
+
     const formatter = new VF.Formatter().joinVoices([voice]);
     const minWidth = formatter.preCalculateMinTotalWidth([voice]);
 
+    // Horizontal space proportional to total beats so that patterns with the
+    // same number of beats get the same width, and within a pattern notes are
+    // spaced by their durations (a whole note occupies more room than an eighth)
+    // — i.e. real-sheet-music spacing rather than a shrink-wrap.
+    let totalEighths = 0;
+    for (const ev of patternScore) if (!ev.gracenote) totalEighths += ev.duration || 0;
+    const PX_PER_EIGHTH = 26;
     const clefPad = 46;
-    const rightPad = 16;
-    const W = Math.ceil((minWidth + clefPad + rightPad) * scale);
+    const rightPad = 18;
+    const noteArea = Math.max(minWidth, totalEighths * PX_PER_EIGHTH);
+
+    const W = Math.ceil((noteArea + clefPad + rightPad) * scale);
     const H = Math.ceil(130 * scale);
 
     const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
@@ -95,10 +108,8 @@
     stave.addClef("treble");
     stave.setContext(ctx).draw();
 
-    formatter.format([voice], (W / scale) - clefPad - rightPad);
+    formatter.format([voice], noteArea);
     voice.draw(ctx, stave);
-
-    const beams = VF.Beam.generateBeams(notes);
     beams.forEach((b) => b.setContext(ctx).draw());
 
     // map sounding events to their drawn SVG groups for highlighting

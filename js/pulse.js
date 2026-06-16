@@ -3,7 +3,7 @@
   const playBtn = document.getElementById("play");
   const bpmInput = document.getElementById("bpm");
   const rate = document.getElementById("rate");
-  const dot = document.getElementById("dot");
+  const orb = document.getElementById("orb");
   const grid = document.getElementById("grid");
   const size = document.getElementById("size");
 
@@ -11,10 +11,13 @@
     onState(playing) {
       playBtn.textContent = playing ? "❚❚ Stop pulse" : "▶ Start pulse";
       playBtn.classList.toggle("go", !playing);
+      if (!playing) orb.classList.remove("flash");
     },
     onBeat() {
-      dot.classList.add("on");
-      setTimeout(() => dot.classList.remove("on"), 70);
+      orb.classList.add("flash");
+      // keep the flash short so it reads as a distinct pulse even at fast tempo
+      const ms = Math.min(120, (60000 / engine.bpm) * 0.45);
+      setTimeout(() => orb.classList.remove("flash"), ms);
     },
   });
 
@@ -23,23 +26,30 @@
     rate.textContent = bpm + " bpm · " + (bpm / 60).toFixed(1) + " clicks/sec";
   }
 
-  // Render all 53 patterns once (crisp vector; columns scale them for projection).
-  IN_C_SCORE.forEach((p) => {
-    const cell = document.createElement("div");
-    cell.className = "cell" + (p.changeHue ? " hue" : "");
-    const num = document.createElement("div");
-    num.className = "num";
-    num.textContent = p.number;
-    cell.appendChild(num);
-    const holder = document.createElement("div");
-    holder.style.paddingTop = "16px";
-    cell.appendChild(holder);
-    grid.appendChild(cell);
-    Notation.renderPattern(holder, p.score, { scale: 1.0 });
-  });
+  // Render all 53 patterns at the chosen scale. Each keeps its intrinsic,
+  // beat-proportional width; the size slider re-renders larger for projection.
+  function renderAll(scale) {
+    grid.innerHTML = "";
+    IN_C_SCORE.forEach((p) => {
+      const cell = document.createElement("div");
+      cell.className = "cell" + (p.changeHue ? " hue" : "");
+      const num = document.createElement("div");
+      num.className = "num";
+      num.textContent = p.number;
+      cell.appendChild(num);
+      const holder = document.createElement("div");
+      cell.appendChild(holder);
+      grid.appendChild(cell);
+      Notation.renderPattern(holder, p.score, { scale });
+    });
+  }
+  renderAll(parseFloat(size.value));
 
+  let rafPending = false;
   size.addEventListener("input", () => {
-    grid.style.setProperty("--cell-min", size.value + "px");
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => { rafPending = false; renderAll(parseFloat(size.value)); });
   });
 
   bpmInput.addEventListener("change", () => {

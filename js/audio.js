@@ -145,7 +145,7 @@
     constructor(score, handlers) {
       this.score = score;
       this.h = handlers || {};
-      this.bpm = 120;
+      this.bpm = 120;                 // pulse (eighth-click) rate per minute — shared with the Pulse view
       this.voiceId = "marimba";
       this.patternIndex = 0;
       this.evIndex = 0;
@@ -154,18 +154,29 @@
       this.nextTime = 0;
       this.timer = null;
       this.taps = [];
-      this._loopId = 0;
+      this.anchor = null;             // audio-clock time of a known pulse-grid onset (set by tapping)
+      this.pending = null;            // { bpm, anchor } to apply cleanly at the next loop boundary
     }
 
     get voice() { return getVoice(this.voiceId); }
     setVoice(id) { this.voiceId = id; }
     setBpm(b) { this.bpm = Math.min(400, Math.max(20, b)); }
+    secPerEighth() { return 60 / this.bpm; }
+
+    // The shared pulse grid: onsets at anchor + k * (one eighth). Returns the first
+    // grid onset at or after `after`. If no anchor yet, start the grid at `after`.
+    _nextGrid(after) {
+      const P = this.secPerEighth();
+      if (this.anchor == null) { this.anchor = after; return after; }
+      const k = Math.ceil((after - this.anchor) / P - 1e-9);
+      return this.anchor + k * P;
+    }
 
     goToPattern(i) {
       this.patternIndex = Math.min(this.score.length - 1, Math.max(0, i));
       this.evIndex = 0;
       this.advanceQueued = false;
-      this.nextTime = Tone.now() + 0.06;
+      this.nextTime = this._nextGrid(Tone.now() + 0.06);
       if (this.h.onPattern) this.h.onPattern(this.patternIndex);
       if (this.h.onQueue) this.h.onQueue(false);
     }
@@ -184,38 +195,59 @@
       await ensureStarted();
       if (this.playing) return;
       this.playing = true;
-      this.nextTime = Tone.now() + 0.1;
+      // quantize the first note onto the shared pulse grid established by tapping
+      this.nextTime = this._nextGrid(Tone.now() + 0.12);
       this.timer = setInterval(() => this._tick(), 25);
       if (this.h.onState) this.h.onState(true);
     }
 
     pause() {
       this.playing = false;
+      if (this.pending) { // settle any queued re-sync so it's in effect for next Play
+        this.setBpm(this.pending.bpm); this.anchor = this.pending.anchor; this.pending = null;
+        if (this.h.onBpm) this.h.onBpm(Math.round(this.bpm));
+        if (this.h.onResync) this.h.onResync(false);
+      }
       if (this.timer) { clearInterval(this.timer); this.timer = null; }
       if (this.h.onState) this.h.onState(false);
     }
 
     toggle() { return this.playing ? (this.pause(), false) : (this.start(), true); }
 
+    // Tap = one eighth-note pulse (tap along with the projected pulse). Sets BOTH
+    // tempo (from the tap intervals) AND phase (this tap is a pulse-grid onset).
     tap() {
-      const now = (typeof performance !== "undefined" ? performance.now() : Date.now());
-      this.taps = this.taps.filter((t) => now - t < 2200);
-      this.taps.push(now);
+      const nowP = (typeof performance !== "undefined" ? performance.now() : Date.now());
+      const nowA = Tone.now();
+      this.taps = this.taps.filter((t) => nowP - t.p < 2200);
+      this.taps.push({ p: nowP, a: nowA });
+      let bpm = this.bpm;
       if (this.taps.length >= 2) {
         const iv = [];
-        for (let i = 1; i < this.taps.length; i++) iv.push(this.taps[i] - this.taps[i - 1]);
+        for (let i = 1; i < this.taps.length; i++) iv.push(this.taps[i].p - this.taps[i - 1].p);
         iv.sort((a, b) => a - b);
         const med = iv[Math.floor(iv.length / 2)];
-        if (med > 80 && med < 3000) {
-          this.setBpm(60000 / med); // tap interval = one eighth pulse
-          if (this.h.onBpm) this.h.onBpm(Math.round(this.bpm));
-        }
+        if (med > 80 && med < 3000) bpm = 60000 / med; // tap interval = one pulse
       }
-      // realign the loop downbeat to this tap so phones lock to the tapper
+      this._resync(bpm, nowA);
+    }
+
+    // Shift this phone's phase by half a pulse — fine repair when slightly off.
+    nudge(dir) {
+      const base = (this.anchor == null) ? Tone.now() : this.anchor;
+      this._resync(this.bpm, base + dir * this.secPerEighth() / 2);
+    }
+
+    // Apply new tempo/phase. While playing, defer to the next loop boundary so the
+    // current phrase finishes cleanly (no stutter); while stopped, apply at once.
+    _resync(bpm, anchor) {
       if (this.playing) {
-        this.evIndex = 0;
-        this.nextTime = Tone.now() + 0.05;
-        if (this.h.onQueue && this.advanceQueued) { /* keep queue */ }
+        this.pending = { bpm, anchor };
+        if (this.h.onResync) this.h.onResync(true);
+      } else {
+        this.setBpm(bpm);
+        this.anchor = anchor;
+        if (this.h.onBpm) this.h.onBpm(Math.round(this.bpm));
       }
     }
 
@@ -259,6 +291,15 @@
       const pat = this.score[this.patternIndex].score;
       if (this.evIndex >= pat.length) {
         this.evIndex = 0;
+        // apply a queued re-sync (tap / nudge) exactly at the loop boundary
+        if (this.pending) {
+          this.setBpm(this.pending.bpm);
+          this.anchor = this.pending.anchor;
+          this.pending = null;
+          this.nextTime = this._nextGrid(this.nextTime);
+          if (this.h.onBpm) this.h.onBpm(Math.round(this.bpm));
+          if (this.h.onResync) this.h.onResync(false);
+        }
         const boundary = this.nextTime;
         if (this.advanceQueued && this.patternIndex < this.score.length - 1) {
           this.patternIndex++;

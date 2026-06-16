@@ -7,52 +7,58 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="wrap">
-    <h1>In C</h1>
-    <p class="tagline">Terry Riley, 1964 — a tool for our collective performance.</p>
-
-    <p class="lead">
-      This little site turns any phone into an instrument for Terry Riley's <em>In&nbsp;C</em>, so that
-      people without instruments (or without years of practice) can join the players who do have them.
-      Everyone moves through the same 53 short melodic patterns at their own pace; the magic is in how
-      the patterns drift against one another.
-    </p>
+  <div class="wrap home">
+    <header class="hero">
+      <h1 class="mark">In&nbsp;<span class="c">C</span></h1>
+      <p class="by">Terry Riley, 1964 — a tool for our collective performance</p>
+      <p class="intro">
+        Turn any phone into an instrument for <em>In&nbsp;C</em>, so people without instruments (or without years
+        of practice) can join the players who do. Everyone moves through the same 53 short melodic patterns at
+        their own pace — the magic is in how the patterns drift against one another.
+      </p>
+    </header>
 
     <div class="cards">
       <a class="card" href="pulse.html">
-        <div class="kicker">Project this</div>
+        <div class="kicker">📽️ Project this</div>
         <h3>Pulse &amp; Score →</h3>
         <p>The steady high-C pulse that keeps everyone together, plus all 53 patterns rendered large on one
            screen — the shared score for everyone playing live instruments.</p>
       </a>
       <a class="card" href="player.html">
-        <div class="kicker">Open on your phone</div>
+        <div class="kicker">📱 Open on your phone</div>
         <h3>Player →</h3>
         <p>Your phone becomes an instrument. Pick a voice, tap to lock onto the pulse, and advance through
            the patterns one at a time. The notes play themselves.</p>
       </a>
     </div>
 
-    <h2>How we'll use it</h2>
-    <ul class="lead">
-      <li><strong>One screen runs the Pulse.</strong> We project the <a href="pulse.html">Pulse&nbsp;&amp;&nbsp;Score</a>
-          page and start the high-C eighth-note pulse. That projection is also the score the live
-          instrumentalists read from.</li>
-      <li><strong>Everyone else opens the <a href="player.html">Player</a></strong> on their phone, chooses an
-          instrument voice, and presses play. Tap the <em>Tap pulse</em> button along with the projected pulse so
-          your phone locks to the room.</li>
-      <li><strong>Move at your own pace.</strong> Stay on each pattern for a while (think ~45&nbsp;sec to a
-          minute), then press <em>Advance</em> when you're ready — your phone switches to the next pattern at the
-          end of the current loop. Keep within a few patterns of everyone else.</li>
-      <li><strong>The end:</strong> when everyone has reached pattern&nbsp;53, we hold it together, swell up and
-          down a few times, and drop out one by one.</li>
-    </ul>
-    <p class="note">Set the same BPM on the Pulse and on every phone so the whole room shares one clock.
-       Sound needs a tap to start (phone browsers require a touch before they'll play audio) — that's what the
-       play button is for.</p>
+    <section class="section">
+      <h2>How we'll use it</h2>
+      <ol class="steps">
+        <li><span class="n">1</span><span class="t"><strong>One screen runs the Pulse.</strong> We project the
+            <a href="pulse.html">Pulse&nbsp;&amp;&nbsp;Score</a> page and start the high-C eighth-note pulse. That
+            projection is also the score the live instrumentalists read from.</span></li>
+        <li><span class="n">2</span><span class="t"><strong>Everyone else opens the
+            <a href="player.html">Player</a></strong> on their phone, chooses an instrument voice, and presses
+            play. Tap the <em>Tap pulse</em> button along with the projected pulse so your phone locks to the
+            room.</span></li>
+        <li><span class="n">3</span><span class="t"><strong>Move at your own pace.</strong> Stay on each pattern
+            for a while (think ~45&nbsp;sec to a minute), then press <em>Advance</em> when you're ready — your
+            phone switches to the next pattern at the end of the current loop. Keep within a few patterns of
+            everyone else.</span></li>
+        <li><span class="n">4</span><span class="t"><strong>The end.</strong> When everyone has reached
+            pattern&nbsp;53, we hold it together, swell up and down a few times, and drop out one by one.</span></li>
+      </ol>
+      <p class="callout">💡 Set the same BPM on the Pulse and on every phone so the whole room shares one clock.
+         Sound needs a tap to start — phone browsers require a touch before they'll play audio — that's what the
+         play button is for.</p>
+    </section>
 
-    <h2>Terry Riley's performing directions</h2>
-    <div class="directions">
+    <section class="section">
+      <h2>Terry Riley's performing directions</h2>
+      <div class="directions-panel">
+      <div class="directions">
       <p>All performers play from the same page of 53 melodic patterns played in sequence.</p>
 
       <p>Any number of any kind of instruments can play. A group of about 35 is desired if possible but smaller
@@ -109,25 +115,32 @@
          entire ensemble has arrived there. The group then makes a large crescendo and diminuendo a few times and
          each player drops out as he or she wishes.</p>
 
-      <p class="note">— Terry Riley</p>
+      <p class="note" style="font-family:Georgia,serif;font-style:italic">— Terry Riley</p>
+      </div>
     </div>
+    </section>
 
-    <h2>Credits &amp; thanks</h2>
-    <p class="lead">
-      This tool stands on the shoulders of <strong>Tero Parviainen</strong> (<a href="https://teropa.info/">teropa</a>).
-      The machine-readable transcription of all 53 patterns that drives both the notation and the audio here comes
-      directly from his open-source <a href="https://github.com/teropa/in-c"><em>In&nbsp;C</em> project</a> — without
-      that careful work this would have been a far harder and less trustworthy thing to build. If you enjoy this,
-      go spend time with his own interactive realization and his
-      <a href="https://teropa.info/blog/2017/01/23/terry-rileys-in-c.html">wonderful write-up on the piece</a>.
-    </p>
-    <p class="note">
-      Music: Terry Riley, <em>In&nbsp;C</em> (1964). Pattern transcription:
-      <a href="https://github.com/teropa/in-c">teropa/in-c</a>, cross-checked against the published Celestial
-      Harmonies score. Audio synthesized in your browser with <a href="https://tonejs.github.io/">Tone.js</a>;
-      notation rendered with <a href="https://www.vexflow.com/">VexFlow</a>. Both libraries are bundled locally so
-      the tool works without internet once loaded.
-    </p>
+    <section class="section">
+      <h2>Credits &amp; thanks</h2>
+      <div class="credits-box">
+        <p class="lead" style="margin-top:0">
+          This tool stands on the shoulders of <strong>Tero Parviainen</strong>
+          (<a href="https://teropa.info/">teropa</a>). The machine-readable transcription of all 53 patterns that
+          drives both the notation and the audio here comes directly from his open-source
+          <a href="https://github.com/teropa/in-c"><em>In&nbsp;C</em> project</a> — without that careful work this
+          would have been a far harder and less trustworthy thing to build. If you enjoy this, go spend time with
+          his own interactive realization and his
+          <a href="https://teropa.info/blog/2017/01/23/terry-rileys-in-c.html">wonderful write-up on the piece</a>.
+        </p>
+        <p class="note" style="margin-bottom:0">
+          Music: Terry Riley, <em>In&nbsp;C</em> (1964). Pattern transcription:
+          <a href="https://github.com/teropa/in-c">teropa/in-c</a>, cross-checked against the published Celestial
+          Harmonies score. Audio synthesized in your browser with <a href="https://tonejs.github.io/">Tone.js</a>;
+          notation rendered with <a href="https://www.vexflow.com/">VexFlow</a>. Both libraries are bundled locally
+          so the tool works without internet once loaded.
+        </p>
+      </div>
+    </section>
   </div>
 </body>
 </html>

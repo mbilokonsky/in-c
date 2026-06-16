@@ -16,21 +16,25 @@
         <label for="bpm">Pulse (BPM)</label>
         <input id="bpm" type="number" min="20" max="400" step="1" value="120" inputmode="numeric">
       </div>
-      <div class="pulse-rate">
-        <span class="pulse-dot" id="dot"></span>
-        <span id="rate"></span>
+      <div class="metro">
+        <div class="beat-orb" id="orb"></div>
+        <div class="metro-text">
+          <div id="rate" class="pulse-rate"></div>
+          <div class="metro-label">tap your phone once per flash</div>
+        </div>
       </div>
       <div class="spacer"></div>
       <div class="field">
         <label for="size">Notation size</label>
-        <input id="size" type="range" min="220" max="560" step="10" value="320" style="width:180px;min-height:auto">
+        <input id="size" type="range" min="0.6" max="1.8" step="0.05" value="0.95" style="width:180px;min-height:auto">
       </div>
     </div>
 
     <p class="note" style="margin-top:14px">
-      The pulse sounds an eighth-note high&nbsp;C — one click per beat at this BPM. This is the shared clock:
-      set every phone's <a href="player.html">Player</a> to the same BPM. All 53 patterns are below, in order,
-      for the live instrumentalists to read.
+      The pulse sounds <em>and</em> flashes an eighth-note high&nbsp;C. Everyone on a phone watches this pulse and
+      taps their <a href="player.html">Player</a> once per flash to lock on — tempo and phase together. This is the
+      shared clock; the same BPM appears on every phone. All 53 patterns are below, in order, for the live
+      instrumentalists to read.
     </p>
 
     <div id="grid" class="score-grid"></div>

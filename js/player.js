@@ -14,6 +14,9 @@
     tap: document.getElementById("tap"),
     advance: document.getElementById("advance"),
     back: document.getElementById("back"),
+    nudgeBack: document.getElementById("nudgeBack"),
+    nudgeFwd: document.getElementById("nudgeFwd"),
+    syncStatus: document.getElementById("syncStatus"),
   };
 
   let noteEls = [];
@@ -56,6 +59,10 @@
       el.play.classList.toggle("go", !playing);
     },
     onBpm(b) { el.bpm.value = b; },
+    onResync(queued) {
+      el.syncStatus.className = "note" + (queued ? " queued-resync" : "");
+      el.syncStatus.textContent = queued ? "↻ re-syncing at end of loop" : "";
+    },
   });
 
   // initial paint
@@ -71,6 +78,8 @@
   });
   el.back.addEventListener("click", () => player.goToPattern(player.patternIndex - 1));
   el.tap.addEventListener("click", () => player.tap());
+  el.nudgeBack.addEventListener("click", () => player.nudge(-1));
+  el.nudgeFwd.addEventListener("click", () => player.nudge(1));
   el.voice.addEventListener("change", () => player.setVoice(el.voice.value));
   el.bpm.addEventListener("change", () => {
     player.setBpm(parseFloat(el.bpm.value) || 120);
@@ -84,7 +93,17 @@
     try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch (e) {}
   }
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && player.playing) requestWake();
+    if (document.visibilityState === "visible" && player.playing) {
+      requestWake();
+      // the audio clock pauses while hidden, so phase may have drifted — nudge a re-tap
+      el.syncStatus.className = "note wake";
+      el.syncStatus.textContent = "⚠ phone slept — tap pulse to re-sync";
+      setTimeout(() => {
+        if (el.syncStatus.classList.contains("wake")) {
+          el.syncStatus.className = "note"; el.syncStatus.textContent = "";
+        }
+      }, 6000);
+    }
   });
   el.play.addEventListener("click", requestWake, { once: false });
 })();
