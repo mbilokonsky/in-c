@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>In C — Player</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
   <div class="wrap player" style="max-width:560px">
@@ -15,6 +15,12 @@
 
     <div class="stage" id="stage"></div>
     <div class="queued" id="queued">→ advancing at end of this loop</div>
+
+    <div class="next-preview" id="nextPreview">
+      <div class="next-label" id="nextLabel">Next up →</div>
+      <div class="next-stage" id="nextStage"></div>
+    </div>
+
     <div class="endnote" id="endnote">
       <strong>Pattern 53 — the ending.</strong> Stay here and keep looping until the whole ensemble arrives,
       then swell up and down together and drop out when you wish.
@@ -64,9 +70,9 @@
 
   <script src="vendor/Tone.js"></script>
   <script src="vendor/vexflow.js"></script>
-  <script src="js/score-data.js"></script>
-  <script src="js/notation.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/player.js"></script>
+  <script src="js/score-data.js?v=2"></script>
+  <script src="js/notation.js?v=2"></script>
+  <script src="js/audio.js?v=2"></script>
+  <script src="js/player.js?v=2"></script>
 </body>
 </html>

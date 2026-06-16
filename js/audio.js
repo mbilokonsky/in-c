@@ -264,18 +264,23 @@
       const pat = this.score[this.patternIndex].score;
       const ev = pat[this.evIndex];
       const eighth = 60 / this.bpm;
+      const silent = this.voiceId === "none"; // "Score only" — drive visuals, no audio
 
       if (ev.gracenote) {
-        const gt = Math.max(Tone.now(), t - 0.045);
-        this.voice.triggerAttackRelease(ev.note, 0.09, gt, (VEL[ev.velocity] || 0.5) * 0.7);
+        if (!silent) {
+          const gt = Math.max(Tone.now(), t - 0.045);
+          this.voice.triggerAttackRelease(ev.note, 0.09, gt, (VEL[ev.velocity] || 0.5) * 0.7);
+        }
         this._advance(0); // grace consumes no time
         return;
       }
 
       const dur = ev.duration * eighth;
       if (!ev.rest && ev.note) {
-        const vel = VEL[ev.velocity] || 0.7;
-        this.voice.triggerAttackRelease(ev.note, Math.max(0.05, dur * 0.96), t, vel);
+        if (!silent) {
+          const vel = VEL[ev.velocity] || 0.7;
+          this.voice.triggerAttackRelease(ev.note, Math.max(0.05, dur * 0.96), t, vel);
+        }
         if (this.h.onNote) {
           const idx = this.evIndex;
           const delay = Math.max(0, (t - Tone.now()) * 1000);

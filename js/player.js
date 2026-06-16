@@ -14,6 +14,9 @@
     tap: document.getElementById("tap"),
     advance: document.getElementById("advance"),
     back: document.getElementById("back"),
+    nextStage: document.getElementById("nextStage"),
+    nextLabel: document.getElementById("nextLabel"),
+    nextPreview: document.getElementById("nextPreview"),
     nudgeBack: document.getElementById("nudgeBack"),
     nudgeFwd: document.getElementById("nudgeFwd"),
     syncStatus: document.getElementById("syncStatus"),
@@ -22,8 +25,8 @@
   let noteEls = [];
   let lastEl = null;
 
-  // populate instruments
-  InCAudio.VOICE_LIST.forEach(([id, name]) => {
+  // populate instruments — "Score only" first, for live players using the phone as a silent score
+  [["none", "🔇 Score only (no sound)"], ...InCAudio.VOICE_LIST].forEach(([id, name]) => {
     const o = document.createElement("option");
     o.value = id; o.textContent = name;
     el.voice.appendChild(o);
@@ -40,6 +43,19 @@
     el.endnote.classList.toggle("show", i === IN_C_SCORE.length - 1);
     el.advance.disabled = i >= IN_C_SCORE.length - 1;
     el.back.disabled = i <= 0;
+    renderNext(i);
+  }
+
+  function renderNext(i) {
+    if (i < IN_C_SCORE.length - 1) {
+      el.nextLabel.textContent = "Next up → pattern " + (i + 2);
+      Notation.renderPattern(el.nextStage, IN_C_SCORE[i + 1].score, { scale: 0.78 });
+      el.nextPreview.classList.remove("last");
+    } else {
+      el.nextLabel.textContent = "Last pattern — hold here until the whole group arrives";
+      el.nextStage.innerHTML = "";
+      el.nextPreview.classList.add("last");
+    }
   }
 
   function highlight(idx) {
@@ -73,8 +89,14 @@
     await player.toggle();
   });
   el.advance.addEventListener("click", () => {
-    if (player.advanceQueued) player.cancelAdvance();
-    else player.queueAdvance();
+    if (!player.playing) {
+      // not playing (e.g. silent personal score) — move immediately
+      player.goToPattern(player.patternIndex + 1);
+    } else if (player.advanceQueued) {
+      player.cancelAdvance();
+    } else {
+      player.queueAdvance();
+    }
   });
   el.back.addEventListener("click", () => player.goToPattern(player.patternIndex - 1));
   el.tap.addEventListener("click", () => player.tap());

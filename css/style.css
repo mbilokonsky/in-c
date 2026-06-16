@@ -250,3 +250,26 @@ button.mini { min-height: 44px; padding: 9px 14px; font-size: .95rem; white-spac
   border: 1px solid #ffe2a8; color: #7a5a00; font-size: .95rem; display: none;
 }
 .endnote.show { display: block; }
+
+/* Next-phrase preview — see what you'll advance into */
+.next-preview {
+  margin-top: 14px; padding: 10px 12px; border: 1px dashed #d6d6d6; border-radius: 12px;
+  background: #fcfcfc;
+}
+.next-label {
+  font-size: .76rem; text-transform: uppercase; letter-spacing: .5px; color: var(--muted);
+  font-weight: 700; margin-bottom: 4px; text-align: left;
+}
+.next-stage { overflow-x: auto; opacity: .8; }
+.next-stage svg { display: block; margin: 0 auto; }
+.next-preview.last { border-style: solid; background: #fff7e6; border-color: #ffe2a8; }
+.next-preview.last .next-label { color: #7a5a00; }
+
+/* ---------- Pulse view: full-screen projected score ---------- */
+.pulse-page {
+  height: 100vh; height: 100dvh; max-width: none;
+  display: flex; flex-direction: column; padding: 8px 12px 10px;
+}
+.pulse-page .controls { position: static; flex: 0 0 auto; }
+.score-area { flex: 1 1 auto; min-height: 0; overflow: auto; margin-top: 8px; }
+.score-area .score-grid { margin-top: 0; justify-content: center; align-content: flex-start; }

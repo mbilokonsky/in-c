@@ -4,13 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>In C — Pulse &amp; Score</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
-  <div class="wrap" style="max-width:1600px">
-    <a class="backlink" href="index.html">← In C</a>
-
+  <div class="wrap pulse-page">
     <div class="controls pulse-controls">
+      <a class="backlink" href="index.html" style="margin:0" title="Back to In C">←</a>
       <button id="play" class="go big">▶ Start pulse</button>
       <div class="field">
         <label for="bpm">Pulse (BPM)</label>
@@ -20,31 +19,27 @@
         <div class="beat-orb" id="orb"></div>
         <div class="metro-text">
           <div id="rate" class="pulse-rate"></div>
-          <div class="metro-label">tap your phone once per flash</div>
+          <div class="metro-label">phones: tap once per flash to rejoin</div>
         </div>
       </div>
       <div class="spacer"></div>
+      <button id="fit" class="ghost" title="Resize the whole score to fit this screen">⤢ Fit to screen</button>
       <div class="field">
-        <label for="size">Notation size</label>
-        <input id="size" type="range" min="0.6" max="1.8" step="0.05" value="0.95" style="width:180px;min-height:auto">
+        <label for="size">Size</label>
+        <input id="size" type="range" min="0.22" max="2.2" step="0.01" value="0.95" style="width:150px;min-height:auto">
       </div>
     </div>
 
-    <p class="note" style="margin-top:14px">
-      The pulse sounds <em>and</em> flashes an eighth-note high&nbsp;C. Everyone on a phone watches this pulse and
-      taps their <a href="player.html">Player</a> once per flash to lock on — tempo and phase together. This is the
-      shared clock; the same BPM appears on every phone. All 53 patterns are below, in order, for the live
-      instrumentalists to read.
-    </p>
-
-    <div id="grid" class="score-grid"></div>
+    <div class="score-area">
+      <div id="grid" class="score-grid"></div>
+    </div>
   </div>
 
   <script src="vendor/Tone.js"></script>
   <script src="vendor/vexflow.js"></script>
-  <script src="js/score-data.js"></script>
-  <script src="js/notation.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/pulse.js"></script>
+  <script src="js/score-data.js?v=2"></script>
+  <script src="js/notation.js?v=2"></script>
+  <script src="js/audio.js?v=2"></script>
+  <script src="js/pulse.js?v=2"></script>
 </body>
 </html>

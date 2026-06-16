@@ -6,6 +6,8 @@
   const orb = document.getElementById("orb");
   const grid = document.getElementById("grid");
   const size = document.getElementById("size");
+  const fitBtn = document.getElementById("fit");
+  const scoreArea = document.querySelector(".score-area");
 
   const engine = new InCAudio.PulseEngine({
     onState(playing) {
@@ -43,14 +45,49 @@
       Notation.renderPattern(holder, p.score, { scale });
     });
   }
-  renderAll(parseFloat(size.value));
+  // Fit the entire 53-pattern score into the projected screen by binary-searching
+  // the largest notation scale whose flowed layout still fits the available height.
+  let autofit = true;
+  function fitToScreen() {
+    autofit = true;
+    const avail = scoreArea.clientHeight - 6;
+    const min = parseFloat(size.min);
+    const fits = (s) => { renderAll(s); return grid.scrollHeight <= avail; };
+    // Layout height is a step function of scale (wrapping changes column count), so
+    // binary search can land in a valley. Scan downward and take the LARGEST scale
+    // that fits, then fine-refine upward.
+    let best = min;
+    let coarse = null;
+    for (let s = 1.4; s >= min - 1e-9; s -= 0.1) {
+      if (fits(Math.max(min, s))) { coarse = Math.max(min, s); break; }
+    }
+    if (coarse != null) {
+      best = coarse;
+      for (let s = coarse + 0.03; s <= coarse + 0.1 + 1e-9; s += 0.03) {
+        if (fits(s)) best = s; else break;
+      }
+    }
+    renderAll(best);
+    size.value = best.toFixed(2);
+  }
 
   let rafPending = false;
   size.addEventListener("input", () => {
+    autofit = false; // manual override
     if (rafPending) return;
     rafPending = true;
     requestAnimationFrame(() => { rafPending = false; renderAll(parseFloat(size.value)); });
   });
+  fitBtn.addEventListener("click", fitToScreen);
+
+  let resizeT = null;
+  window.addEventListener("resize", () => {
+    if (!autofit) return;
+    clearTimeout(resizeT);
+    resizeT = setTimeout(fitToScreen, 250);
+  });
+
+  fitToScreen();
 
   bpmInput.addEventListener("change", () => {
     engine.setBpm(parseFloat(bpmInput.value) || 120);
