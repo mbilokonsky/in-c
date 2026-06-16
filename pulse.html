@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>In C — Pulse &amp; Score</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap" style="max-width:1600px">
+    <a class="backlink" href="index.html">← In C</a>
+
+    <div class="controls pulse-controls">
+      <button id="play" class="go big">▶ Start pulse</button>
+      <div class="field">
+        <label for="bpm">Pulse (BPM)</label>
+        <input id="bpm" type="number" min="20" max="400" step="1" value="120" inputmode="numeric">
+      </div>
+      <div class="pulse-rate">
+        <span class="pulse-dot" id="dot"></span>
+        <span id="rate"></span>
+      </div>
+      <div class="spacer"></div>
+      <div class="field">
+        <label for="size">Notation size</label>
+        <input id="size" type="range" min="220" max="560" step="10" value="320" style="width:180px;min-height:auto">
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:14px">
+      The pulse sounds an eighth-note high&nbsp;C — one click per beat at this BPM. This is the shared clock:
+      set every phone's <a href="player.html">Player</a> to the same BPM. All 53 patterns are below, in order,
+      for the live instrumentalists to read.
+    </p>
+
+    <div id="grid" class="score-grid"></div>
+  </div>
+
+  <script src="vendor/Tone.js"></script>
+  <script src="vendor/vexflow.js"></script>
+  <script src="js/score-data.js"></script>
+  <script src="js/notation.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/pulse.js"></script>
+</body>
+</html>

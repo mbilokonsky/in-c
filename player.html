@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>In C — Player</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap player" style="max-width:560px">
+    <a class="backlink" href="index.html">← In C</a>
+
+    <div class="pcount"><span id="pos">1</span> / 53</div>
+    <div class="pnum">Pattern <span id="num">1</span></div>
+
+    <div class="stage" id="stage"></div>
+    <div class="queued" id="queued">→ advancing at end of this loop</div>
+    <div class="endnote" id="endnote">
+      <strong>Pattern 53 — the ending.</strong> Stay here and keep looping until the whole ensemble arrives,
+      then swell up and down together and drop out when you wish.
+    </div>
+
+    <div class="row" style="margin:14px 0 6px">
+      <span class="pulse-dot" id="dot"></span>
+      <span class="bpm-readout note">voice &amp; tempo below</span>
+    </div>
+
+    <div class="controls" style="position:static;justify-content:center">
+      <div class="field" style="flex:1">
+        <label for="voice">Instrument</label>
+        <select id="voice" style="width:100%"></select>
+      </div>
+      <div class="field">
+        <label for="bpm">BPM</label>
+        <input id="bpm" type="number" min="20" max="400" step="1" value="120" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <button id="play" class="go full">▶ Play</button>
+      <button id="tap" class="secondary tap-btn">⊙ Tap pulse</button>
+      <button id="advance" class="accent">Advance →</button>
+      <button id="back" class="ghost">← Back</button>
+    </div>
+    <div class="tap-hint">Tap <em>Tap pulse</em> along with the room's pulse to lock your phone to everyone else.</div>
+
+    <p class="note" style="margin-top:22px">
+      Pick a voice, press <strong>Play</strong>, and your phone loops the current pattern. Press
+      <strong>Advance</strong> when you're ready to move on — it switches at the end of the loop. Stay within a
+      few patterns of everyone else.
+    </p>
+  </div>
+
+  <script src="vendor/Tone.js"></script>
+  <script src="vendor/vexflow.js"></script>
+  <script src="js/score-data.js"></script>
+  <script src="js/notation.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>
