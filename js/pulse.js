@@ -50,6 +50,7 @@
   let autofit = true;
   function fitToScreen() {
     autofit = true;
+    grid.classList.remove("fill"); // measure natural content height, not the stretched grid
     const avail = scoreArea.clientHeight - 6;
     const min = parseFloat(size.min);
     const fits = (s) => { renderAll(s); return grid.scrollHeight <= avail; };
@@ -68,12 +69,14 @@
       }
     }
     renderAll(best);
+    grid.classList.add("fill"); // spread rows to fill the full height
     size.value = best.toFixed(2);
   }
 
   let rafPending = false;
   size.addEventListener("input", () => {
-    autofit = false; // manual override
+    autofit = false; // manual override — natural height, may scroll
+    grid.classList.remove("fill");
     if (rafPending) return;
     rafPending = true;
     requestAnimationFrame(() => { rafPending = false; renderAll(parseFloat(size.value)); });

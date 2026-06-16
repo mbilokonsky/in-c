@@ -273,3 +273,5 @@ button.mini { min-height: 44px; padding: 9px 14px; font-size: .95rem; white-spac
 .pulse-page .controls { position: static; flex: 0 0 auto; }
 .score-area { flex: 1 1 auto; min-height: 0; overflow: auto; margin-top: 8px; }
 .score-area .score-grid { margin-top: 0; justify-content: center; align-content: flex-start; }
+/* once fitted, spread the rows to fill the full vertical space (no dead gap below) */
+.score-area .score-grid.fill { min-height: 100%; align-content: space-evenly; }
